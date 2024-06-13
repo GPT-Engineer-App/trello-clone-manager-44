@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FaPlus } from 'react-icons/fa';
 import { Container, VStack, HStack, Box, Heading, Input, Button, Text, Textarea } from "@chakra-ui/react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
@@ -163,7 +164,9 @@ const Index = () => {
                         </HStack>
                       </Box>
                     ) : (
-                      <Text mt={4} color="blue.500" cursor="pointer" onClick={() => handleAddCardClick(columnId)}>Add new ticket...</Text>
+                      <Button leftIcon={<FaPlus />} colorScheme="blue" variant="solid" mt={4} onClick={() => handleAddCardClick(columnId)}>
+                        Add new ticket
+                      </Button>
                     )}
                   </Box>
                 )}
