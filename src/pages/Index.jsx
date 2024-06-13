@@ -81,6 +81,10 @@ const Index = () => {
 
   const addCardToColumn = (columnId, newCardText, newCardDetails) => {
     if (newCardText.trim() === "") return;
+    if (editingCard) {
+      saveEditedCard();
+      return;
+    }
     const newCard = { id: `${new Date().getTime()}`, content: newCardText, details: newCardDetails };
     setColumns({
       ...columns,
@@ -95,6 +99,9 @@ const Index = () => {
   };
 
   const handleAddCardClick = (columnId) => {
+    if (editingCard) {
+      saveEditedCard();
+    }
     setShowInput({ ...showInput, [columnId]: true });
     setEditingCard(null);
   };
@@ -103,6 +110,7 @@ const Index = () => {
     setShowInput({ ...showInput, [columnId]: false });
     setNewCardText("");
     setNewCardDetails("");
+    setEditingCard(null);
   };
 
   const handleCardClick = (columnId, cardId) => {
@@ -133,6 +141,8 @@ const Index = () => {
     });
     setEditingCard(null);
     setShowInput({ ...showInput, [columnId]: false });
+    setNewCardText("");
+    setNewCardDetails("");
   };
 
   const cancelEditing = () => {
