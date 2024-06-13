@@ -234,6 +234,7 @@ const Index = () => {
                       </Box>
                     ) : (
                       <Button leftIcon={<FaPlus />} colorScheme="blue" variant="outline" mt={4} onClick={() => handleAddCardClick(columnId)}>
+                        Add Card
                       </Button>
                     )}
                   </Box>
