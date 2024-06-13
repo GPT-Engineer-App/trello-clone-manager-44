@@ -141,8 +141,6 @@ const Index = () => {
     });
     setEditingCard(null);
     setShowInput({ ...showInput, [columnId]: false });
-    setNewCardText("");
-    setNewCardDetails("");
   };
 
   const cancelEditing = () => {
