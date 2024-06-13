@@ -108,6 +108,7 @@ const Index = () => {
   const handleCardClick = (columnId, cardId) => {
     const card = columns[columnId].items.find(item => item.id === cardId);
     setEditingCard({ columnId, cardId, content: card.content, details: card.details });
+    setShowInput({ ...showInput, [columnId]: true });
   };
 
   const handleCardContentChange = (e) => {
@@ -136,6 +137,7 @@ const Index = () => {
 
   const cancelEditing = () => {
     setEditingCard(null);
+    setShowInput({});
   };
 
   return (
