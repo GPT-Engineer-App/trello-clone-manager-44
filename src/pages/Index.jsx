@@ -39,6 +39,7 @@ const Index = () => {
   const [newCardText, setNewCardText] = useState("");
   const [newCardDetails, setNewCardDetails] = useState("");
   const [showInput, setShowInput] = useState({});
+  const [editingCard, setEditingCard] = useState(null);
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -95,12 +96,45 @@ const Index = () => {
 
   const handleAddCardClick = (columnId) => {
     setShowInput({ ...showInput, [columnId]: true });
+    setEditingCard(null);
   };
 
   const handleCancelClick = (columnId) => {
     setShowInput({ ...showInput, [columnId]: false });
     setNewCardText("");
     setNewCardDetails("");
+  };
+
+  const handleCardClick = (columnId, cardId) => {
+    const card = columns[columnId].items.find(item => item.id === cardId);
+    setEditingCard({ columnId, cardId, content: card.content, details: card.details });
+  };
+
+  const handleCardContentChange = (e) => {
+    setEditingCard({ ...editingCard, content: e.target.value });
+  };
+
+  const handleCardDetailsChange = (e) => {
+    setEditingCard({ ...editingCard, details: e.target.value });
+  };
+
+  const saveEditedCard = () => {
+    const { columnId, cardId, content, details } = editingCard;
+    const updatedItems = columns[columnId].items.map(item => 
+      item.id === cardId ? { ...item, content, details } : item
+    );
+    setColumns({
+      ...columns,
+      [columnId]: {
+        ...columns[columnId],
+        items: updatedItems
+      }
+    });
+    setEditingCard(null);
+  };
+
+  const cancelEditing = () => {
+    setEditingCard(null);
   };
 
   return (
@@ -136,9 +170,31 @@ const Index = () => {
                             mb={2}
                             bg={snapshot.isDragging ? "blue.200" : "blue.100"}
                             rounded="md"
+                            onClick={() => handleCardClick(columnId, item.id)}
                           >
-                            <Text>{item.content}</Text>
-                            <Text fontSize="sm" color="gray.600">{item.details}</Text>
+                            {editingCard && editingCard.cardId === item.id ? (
+                              <Box>
+                                <Input
+                                  value={editingCard.content}
+                                  onChange={handleCardContentChange}
+                                  mb={2}
+                                />
+                                <Textarea
+                                  value={editingCard.details}
+                                  onChange={handleCardDetailsChange}
+                                  mb={2}
+                                />
+                                <HStack>
+                                  <Button size="sm" onClick={saveEditedCard}>Save</Button>
+                                  <Button size="sm" onClick={cancelEditing}>Cancel</Button>
+                                </HStack>
+                              </Box>
+                            ) : (
+                              <Box>
+                                <Text>{item.content}</Text>
+                                <Text fontSize="sm" color="gray.600">{item.details}</Text>
+                              </Box>
+                            )}
                           </Box>
                         )}
                       </Draggable>
