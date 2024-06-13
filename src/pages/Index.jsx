@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, VStack, HStack, Box, Heading, Input, Button, Text } from "@chakra-ui/react";
+import { Container, VStack, HStack, Box, Heading, Input, Button, Text, Textarea } from "@chakra-ui/react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const initialColumns = {
@@ -36,6 +36,8 @@ const initialColumns = {
 const Index = () => {
   const [columns, setColumns] = useState(initialColumns);
   const [newCardText, setNewCardText] = useState("");
+  const [newCardDetails, setNewCardDetails] = useState("");
+  const [showInput, setShowInput] = useState({});
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -75,9 +77,9 @@ const Index = () => {
     }
   };
 
-  const addCardToColumn = (columnId, newCardText) => {
+  const addCardToColumn = (columnId, newCardText, newCardDetails) => {
     if (newCardText.trim() === "") return;
-    const newCard = { id: `${new Date().getTime()}`, content: newCardText };
+    const newCard = { id: `${new Date().getTime()}`, content: newCardText, details: newCardDetails };
     setColumns({
       ...columns,
       [columnId]: {
@@ -85,25 +87,25 @@ const Index = () => {
         items: [...columns[columnId].items, newCard]
       }
     });
+    setShowInput({ ...showInput, [columnId]: false });
+    setNewCardText("");
+    setNewCardDetails("");
   };
 
-  const addCard = () => {
-    addCardToColumn("backlog", newCardText);
+  const handleAddCardClick = (columnId) => {
+    setShowInput({ ...showInput, [columnId]: true });
+  };
+
+  const handleCancelClick = (columnId) => {
+    setShowInput({ ...showInput, [columnId]: false });
     setNewCardText("");
+    setNewCardDetails("");
   };
 
   return (
     <Container maxW="container.xl" p={4}>
       <VStack spacing={4}>
         <Heading>Trello Clone Board</Heading>
-        <HStack>
-          <Input
-            placeholder="Enter new card text"
-            value={newCardText}
-            onChange={(e) => setNewCardText(e.target.value)}
-          />
-          <Button onClick={addCard}>Add Card</Button>
-        </HStack>
         <DragDropContext onDragEnd={onDragEnd}>
           <HStack spacing={4} align="start">
             {Object.entries(columns).map(([columnId, column], index) => (
@@ -121,7 +123,6 @@ const Index = () => {
                   >
                     <HStack justify="space-between" mb={4}>
                       <Heading size="md">{column.name}</Heading>
-                      <Button size="sm" onClick={() => addCardToColumn(columnId, newCardText)}>+</Button>
                     </HStack>
                     {column.items.map((item, index) => (
                       <Draggable key={item.id} draggableId={item.id} index={index}>
@@ -136,11 +137,34 @@ const Index = () => {
                             rounded="md"
                           >
                             <Text>{item.content}</Text>
+                            <Text fontSize="sm" color="gray.600">{item.details}</Text>
                           </Box>
                         )}
                       </Draggable>
                     ))}
                     {provided.placeholder}
+                    {showInput[columnId] ? (
+                      <Box mt={4}>
+                        <Input
+                          placeholder="Enter card title"
+                          value={newCardText}
+                          onChange={(e) => setNewCardText(e.target.value)}
+                          mb={2}
+                        />
+                        <Textarea
+                          placeholder="Enter card details"
+                          value={newCardDetails}
+                          onChange={(e) => setNewCardDetails(e.target.value)}
+                          mb={2}
+                        />
+                        <HStack>
+                          <Button size="sm" onClick={() => addCardToColumn(columnId, newCardText, newCardDetails)}>Add</Button>
+                          <Button size="sm" onClick={() => handleCancelClick(columnId)}>Cancel</Button>
+                        </HStack>
+                      </Box>
+                    ) : (
+                      <Text mt={4} color="blue.500" cursor="pointer" onClick={() => handleAddCardClick(columnId)}>Add new ticket...</Text>
+                    )}
                   </Box>
                 )}
               </Droppable>
