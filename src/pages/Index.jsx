@@ -143,7 +143,7 @@ const Index = () => {
   return (
     <Container maxW="container.xl" p={4}>
       <VStack spacing={4}>
-        <Heading>Trello Clone Board</Heading>
+        <Heading>Task Board</Heading>
         <DragDropContext onDragEnd={onDragEnd}>
           <HStack spacing={4} align="start">
             {Object.entries(columns).map(([columnId, column], index) => (
