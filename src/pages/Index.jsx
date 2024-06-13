@@ -75,16 +75,20 @@ const Index = () => {
     }
   };
 
-  const addCard = () => {
+  const addCardToColumn = (columnId, newCardText) => {
     if (newCardText.trim() === "") return;
     const newCard = { id: `${new Date().getTime()}`, content: newCardText };
     setColumns({
       ...columns,
-      backlog: {
-        ...columns.backlog,
-        items: [...columns.backlog.items, newCard]
+      [columnId]: {
+        ...columns[columnId],
+        items: [...columns[columnId].items, newCard]
       }
     });
+  };
+
+  const addCard = () => {
+    addCardToColumn("backlog", newCardText);
     setNewCardText("");
   };
 
@@ -115,7 +119,10 @@ const Index = () => {
                     maxH="500px"
                     overflowY="auto"
                   >
-                    <Heading size="md" mb={4}>{column.name}</Heading>
+                    <HStack justify="space-between" mb={4}>
+                      <Heading size="md">{column.name}</Heading>
+                      <Button size="sm" onClick={() => addCardToColumn(columnId, newCardText)}>+</Button>
+                    </HStack>
                     {column.items.map((item, index) => (
                       <Draggable key={item.id} draggableId={item.id} index={index}>
                         {(provided, snapshot) => (
