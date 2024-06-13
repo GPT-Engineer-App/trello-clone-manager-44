@@ -164,8 +164,7 @@ const Index = () => {
                         </HStack>
                       </Box>
                     ) : (
-                      <Button leftIcon={<FaPlus />} colorScheme="blue" variant="solid" mt={4} onClick={() => handleAddCardClick(columnId)}>
-                        Add new ticket
+                      <Button leftIcon={<FaPlus />} colorScheme="blue" variant="outline" mt={4} onClick={() => handleAddCardClick(columnId)}>
                       </Button>
                     )}
                   </Box>
